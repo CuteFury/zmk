@@ -27,7 +27,9 @@ Record:
 - build image/toolchain;
 - artifact names/hashes;
 - FLASH usage;
-- RAM usage.
+- RAM usage;
+- persistent-storage capacity, existing Keychron consumption where measurable, and available headroom;
+- representative input/report reliability and responsiveness evidence with stock RGB active, including stable high-rate USB operation, for later comparisons.
 
 ## HW-M0-001 — USB
 Verify cable boot, typing, encoder and normal stock HID behavior.
@@ -60,6 +62,10 @@ Physically verify return to official stock firmware.
 
 Only after this passes should risky custom flashing work begin.
 
+## BASELINE-M0-001
+After all M0 build, physical, Launcher and recovery checks pass, tag the fully verified stock-equivalent source revision (STOCK-005).
+Record the known-good tag with the source/dependency revisions, frozen west manifest and firmware artifact hash where practical.
+
 # Resource regression
 
 ## RES-TEST-001
@@ -69,7 +75,18 @@ Capture stock FLASH usage.
 Capture stock RAM usage.
 
 ## RES-TEST-003
-For significant PRs compare resource use to the current known-good `custom/main`.
+For significant PRs report approximate FLASH/RAM/persistent-storage deltas against the current known-good `custom/main`, including remaining storage headroom (RES-003, RES-004).
+
+# Performance regression
+
+## PERF-TEST-001
+After feature changes, compare representative input/report reliability and responsiveness with the M0 evidence under comparable host, transport, report-rate and test conditions (PERF-001 through PERF-003).
+Exercise typing, held keys/modifiers and rapid press/release while RGB effects are active, semantic RGB recomputation occurs once implemented, and persistent settings are changed. Include stable high-rate USB operation.
+Check for missed/duplicated reports, stuck keys and material responsiveness regressions. Record observations and timing measurements where available; do not assume numerical latency thresholds before measurement and intentional selection.
+
+## PERF-TEST-002
+Audit or instrument the implemented RGB, persistence and diagnostic paths as appropriate (PERF-003, PERF-004).
+Verify that expensive state/keymap recomputation follows relevant events where practical rather than unnecessary continuous rescanning, and that storage/diagnostic work does not unnecessarily block input/report processing.
 
 # Profiles and persistence
 
@@ -238,7 +255,7 @@ After milestones touching keymap, RGB, persistence, HID, USB descriptors or sett
 
 A Q3 v1 candidate must have:
 - clean build;
-- acceptable FLASH/RAM footprint;
+- acceptable FLASH/RAM/storage footprint;
 - verified recovery;
 - profile persistence;
 - F-row persistence;

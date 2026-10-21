@@ -54,16 +54,16 @@ Preferred initial strategy:
 - freeze the resulting manifest;
 - build Q3 with no custom functional changes.
 
-Expected general shape:
+**Unverified schematic only — not a Q3 build procedure.** All paths below depend on the working directory. During M0, derive the exact working directory and explicit build directory from the current Keychron CI/build workflow, including its post-build path assumptions.
 
-```bash
-west init -l app
+```text
+west init -l <app-manifest-path>
 west update
 west zephyr-export
-west build -s app -p -b <board> -- -DSHIELD=<q3-shield>
+west build -s <app-source-path> -d <build-directory> -p -b <board> -- -DSHIELD=<q3-shield>
 ```
 
-**TODO M0:** replace placeholders with the exact Q3 board/shield command verified against the current Keychron workflow.
+**TODO M0:** record the exact Q3 working directory, build directory and build command after deriving them from the current Keychron CI/build workflow and verifying them during M0.
 
 # Dependency freeze
 
