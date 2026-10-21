@@ -18,8 +18,9 @@ Before making firmware changes, read:
 ## Branch rules
 
 - `rtl8762g` mirrors the Keychron vendor branch. Do not add custom commits to it.
-- Custom development targets `custom/main`.
-- Create focused feature/fix branches from `custom/main`.
+- `custom/main` is the integration branch. Do not commit custom work directly to it.
+- Create focused branches from `custom/main`: `custom/docs/<name>`, `custom/feature/<name>`, `custom/fix/<name>`, `custom/audit/<name>`, or `custom/chore/<name>`.
+- Merge custom work through pull requests: `custom/*` branch → PR → `custom/main`.
 - Do not update the vendor baseline implicitly while implementing an unrelated feature.
 - Do not add V0 or other keyboard targets until Q3 is stable unless the task explicitly requires it.
 
