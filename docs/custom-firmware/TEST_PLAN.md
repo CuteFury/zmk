@@ -101,6 +101,18 @@ Expected: Windows Gaming restored.
 Reboot and power-cycle.
 Expected: active profile per OS restored.
 
+## PERSIST-TEST-002
+Once the storage mechanism is selected, audit custom setting names/keys or equivalent isolation boundaries for collisions with existing Keychron/Launcher state.
+Save/reload representative stock and custom settings and verify neither corrupts the other (PERSIST-006).
+
+## PERSIST-TEST-003
+With persistent configuration unchanged and pending legitimate writes settled, repeatedly exercise Fn press/release, lock-state changes and host loss/restoration.
+Use audits or instrumentation appropriate to the selected mechanism to verify these transient events do not cause unnecessary custom persistent writes (PERSIST-007). Distinguish legitimate configuration changes and unrelated stock writes.
+
+## PERSIST-TEST-004
+When persistent profile indicator policy is implemented, configure different policies for two profiles, switch profiles, reboot and power-cycle.
+Expected: each profile's indicator policy is restored independently (PERSIST-005).
+
 ## RESET-TEST-001
 Perform documented factory/config reset.
 Expected: custom persistent state returns to compiled defaults.
@@ -122,10 +134,16 @@ Expected: F-row state preserved.
 Verify Escape/Print Screen/Delete do not change unintentionally.
 
 ## FROW-TEST-005
-Verify independent F-row state for two profiles sharing one functional layer.
+Set different F-row states in two profiles sharing one functional layer, switch between them and verify the states remain independent.
+Hold/release Fn in each active profile and verify momentary activation of its associated functional layer.
 
 ## FROW-TEST-006
-Verify dedicated functional-layer case if/when configured.
+Verify a profile using a dedicated functional layer: hold/release Fn and verify momentary activation routes to the active profile's associated layer, while its F-row state remains independent of other profiles.
+Both FROW-TEST-005 and FROW-TEST-006 are required (PROFILE-006 through PROFILE-008, LAYER-001, LAYER-002, FROW-006 through FROW-008). Use a temporary test configuration/fixture if the shipping keymap does not exercise both topologies; a dedicated shipping profile is not required.
+
+## FROW-TEST-007
+Move the F-row switching binding away from its initial position and verify the action works there. Remove all switching bindings from that layer and verify it no longer exposes F-row switching.
+The original key must follow its current binding (FROW-003 through FROW-005).
 
 # Per-profile RGB
 
@@ -154,16 +172,24 @@ Expected:
 
 ## RGB-FN-TEST-003
 Move a classified action to another physical key.
-Expected: semantic color follows the binding.
+Expected: semantic color follows the binding; both the new and original positions reflect their current effective bindings.
 
 ## RGB-FN-TEST-004
 Verify semantic F-row colors after F-row switching.
+
+## RGB-FN-TEST-005
+Place a supported but unclassified binding on the functional layer and activate that layer repeatedly.
+Expected: deterministic fallback presentation for the same logical state (RGB-FN-008). The exact fallback color remains a configuration decision.
 
 ## RGB-PROFILESEL-TEST-001
 Hold the layer containing profile selectors.
 Expected:
 - inactive selectors use profile-selector color;
 - active profile selector blinks white.
+
+## RGB-PROFILESEL-TEST-002
+Relocate a profile-selector binding and verify explicit profile selection and selector presentation follow the new position while its functional layer is active.
+The original position must follow its current binding (PROFILE-005, RGB-PROFILESEL-004).
 
 # Indicators and masks
 
@@ -182,6 +208,10 @@ In the initial Gaming profile:
 - Windows key produces no action;
 - its LED is OFF.
 Switch to Normal and verify normal behavior returns.
+
+## MASK-TEST-002
+In a test configuration, apply no-action/disabled presentation to a different key, including in a profile other than Gaming.
+Verify no action is emitted and the configured disabled presentation follows that key, while the original key follows its current binding (KEYMASK-001 through KEYMASK-003).
 
 # Ctrl + End
 
@@ -215,6 +245,9 @@ Q3 / receiver
 → PC/laptop
 ```
 
+Before each active-host loss/restoration case below, set and record a non-default active profile, F-row state, profile RGB and indicator policy.
+Verify host loss does not overwrite these values and restoration preserves all four (POWER-008), using observable binding/indicator behavior and state inspection where available rather than RGB appearance alone.
+
 ## POWER-USB-001
 Cable + active host → RGB normal.
 
@@ -222,11 +255,15 @@ Cable + active host → RGB normal.
 Host unavailable/suspended while VBUS remains → target RGB OFF.
 
 ## POWER-USB-003
-Resume/reconnect → previous logical RGB restored.
+Resume/reconnect → previous RGB presentation and all recorded POWER-008 state restored.
 
 ## POWER-USB-004
 Disconnect USB upstream while powered hub remains → RGB OFF.
 Reconnect to active host → RGB restored.
+
+## POWER-BT-001
+With Bluetooth as the active transport, exercise host disconnect/reconnect and applicable suspend/resume.
+Verify RGB OFF while no usable host is available and restoration of RGB and all recorded POWER-008 state. Record any host/stack limitation affecting detection or verification.
 
 ## POWER-24G-001
 2.4 GHz + active host → RGB normal.
@@ -237,6 +274,10 @@ Host shuts down while receiver remains powered → target RGB OFF.
 ## POWER-24G-003
 Stock reference observation:
 when host is unavailable and RGB is unexpectedly ON, unplugging the receiver causes RGB to turn OFF.
+
+## POWER-24G-004
+Restore the downstream host and reconnect if needed; verify RGB presentation and all recorded POWER-008 state are restored.
+For 2.4 GHz loss/restoration cases, record any unmet target, supporting evidence and unresolved receiver/protocol limitation. A radio link to a powered receiver alone is not proof of host availability; receiver changes remain a separately approved scope (POWER-005 through POWER-007).
 
 ## POWER-MIXED-001
 Active 2.4 GHz or BT + USB charging only + inactive USB data host.
@@ -250,6 +291,9 @@ After milestones touching keymap, RGB, persistence, HID, USB descriptors or sett
 - write representative settings;
 - reboot;
 - verify firmware operation.
+
+Repeat applicable binding-relocation/removal cases above through runtime/dynamic-keymap edits where Launcher supports those bindings.
+Verify actions and RGB presentation follow the effective bindings without stale old positions, including after reboot where persistence is supported (LAUNCHER-004). Record unsupported cases explicitly; custom Launcher UI is not required.
 
 # Q3 v1 release gate
 
